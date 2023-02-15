@@ -1,0 +1,15 @@
+---
+title: "Assignment 1a"
+author: "Katheryn Moya"
+date: "2/14/2023"
+output: html_document
+---
+
+## Why I am taking this course:
+
+I am taking this course because I want to learn the best practices for programming and want to learn this foundation so I can better understand the more complicated aspects of programming such as modeling. I also decided to take this course because I find Naomi and her lab's work and research really interesting and hope to be able to understand it better once I learn the basics of programming. 
+
+
+## Data Science Background:
+Prior to 206, I had never taken a data science course before. While I have forgotten more than I would like from that course, I decided to try to get better at my data science skills by taking the advanced data analysis course, 244, this quarter. This especially became important to me as I had to wrangle some really messy salmon data for my GP and realized that these problems could be best solved if I had stronger data science skills. So I feel a bit more comfortable in R at the moment because I am currently taking 244 alongside this course. But I am excited to learn different aspects of data science in these courses and how they compliment each other.
+
