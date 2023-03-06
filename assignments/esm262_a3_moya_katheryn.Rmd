@@ -1,0 +1,157 @@
+---
+title: 'Assignment 3: Looping'
+author: "Katheryn Moya"
+date: "3/4/2023"
+output: 
+   html_document:
+    toc: yes
+    toc_float: yes
+    theme: cosmo
+    code_folding: show
+    collapsed: yes
+---
+
+```{r setup, echo = TRUE, warning = FALSE, message = FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
+library(tidyverse)
+library(purrr)
+library(ggpubr)
+library(patchwork)
+library(cowplot)
+```
+
+# Building a Highway 
+
+For this analysis we will build a highway using four different car types, a range of speed data and the auto power function to calculate the power required to maintain various speeds 
+
+* car A  mass 20000 kg, area 22 m^2^
+
+* car B mass 65000 kg, area 30 m^2^
+
+* car C mass 38000 kg area 22 m^2^
+
+* car D mass 5000 kg and area 10m^2 *(a super light car)*
+
+Mean highway speed of data is 80 km/hr with standard deviation of 10 km/hr
+
+```{r sampling2, eval=TRUE, echo=TRUE}
+
+# source function for auto power
+
+source("~/Documents/MESM Year 2/ESM262/working/R/auto_power.R")
+
+# set possible cars data frame
+# add an additional super light car with mass 5,000 kg and a surface area 10m^2
+possible_cars = data.frame(name = c("A","B","C", "D"),
+                           mass = c(10000, 65000, 38000, 5000),
+                           area = c(22, 30, 22, 10)) 
+
+speed_base = 100 * 0.28 # designate a baseline for a mean speed of 100km/hr
+
+# estimate power for each car type
+
+possible_cars$power = auto_power(v=speed_base, A = possible_cars$area, m=possible_cars$mass)
+```
+
+## Sampling
+
+```{r}
+# create sample to get a distribution of speeds
+
+nsample = 100
+
+# assume a log normal distribution of speeds with mean 80km/hr, and a standard deviation of 10km/hr (12.5%)
+
+mean_speed = log(80*0.277) # convert speed from m/s to km/hr # log normal distribution
+
+speeds = rlnorm(mean = mean_speed, 
+                sd = 0.125*mean_speed, 
+                nsample) 
+```
+
+## Using *pmap* 
+
+```{r}
+power_pmap = pmap(list(A = possible_cars$area, 
+                        m = possible_cars$mass),
+                   auto_power, v = speeds)
+
+# create dataframe with column names
+power_pmap = as.data.frame(power_pmap, col.names= possible_cars$name)
+
+longer_power_pmap<- power_pmap%>% 
+  pivot_longer(cols=everything(), names_to="car", values_to="power") #pivot_longer to turn columns into rows
+  
+```
+
+# For looping
+
+
+```{r withforloop}
+# create dataframe to store results 
+power_loop = as.data.frame(matrix(nrow=length(speeds), ncol=nrow(possible_cars)))
+
+for (i in 1:4) {
+  power_loop[,i] = auto_power(A = possible_cars$area[i], m = possible_cars$mass[i], v = speeds)
+}
+
+# add column names
+colnames(power_loop)= possible_cars$name
+
+longer_power_loop <- power_loop %>% 
+  pivot_longer(cols = everything(), names_to="car", values_to ="power")
+
+```
+
+
+
+```{r}
+# compare means between the two methods
+power_pmap %>% map(mean)
+power_loop%>% map(mean)
+
+# upper 90% quantile
+power_pmap %>% map(quantile, probs=0.9)
+power_loop %>% map(quantile, probs=0.9)
+```
+
+## Data Visualization
+
+```{r}
+# quick visualization
+
+pmap_power <- ggplot(data = longer_power_pmap,
+                     aes(x = car, y = power)) +
+              geom_boxplot(aes(fill = car)) +
+              scale_fill_manual(values = c("cadetblue3", "darkseagreen3", "darkolivegreen3", "darkslategray4")) +
+              theme_minimal() +
+              labs(x = "Car Type",
+                   y = "Power Required by Speed",
+                   title = "Pmap Loop")
+
+loop_power <- ggplot(data = longer_power_loop,
+                     aes(x = car, y = power)) +
+              geom_boxplot(aes(fill = car)) +
+              scale_fill_manual(values = c("cadetblue3", "darkseagreen3", "darkolivegreen3", "darkslategray4")) +
+              theme_minimal() +
+              labs(x = "Car Type",
+                   y = "Power Required by Speed",
+                   title = "For Loop")
+              
+
+```
+
+
+```{r, fig.width=9}
+# put the plots together for comparison
+
+plot_grid(pmap_power, loop_power, 
+          align = 'h',
+          greedy = TRUE,
+          labels = c('A', 'B'), 
+          label_size = 12,
+          hjust = -0.5,
+          vjust = 1.5) 
+
+```

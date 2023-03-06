@@ -1,0 +1,49 @@
+---
+title: 'class 5: loops'
+author: "Katheryn Moya"
+date: "3/1/2023"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+```
+
+# source in the function for NPV
+
+```{r}
+source("working/R/NPV.R")
+```
+
+# Identifying Inputs:
+
+```{r}
+# interest rates
+
+discount_rates = seq(from = 0.01, to = 0.04, by = 0.005)
+
+# damages
+
+damages = c(12, 29, 67, 96, 44)
+
+# years = 10
+```
+
+```{r}
+# create a for loop to calculate all of the NPVs with different discount rates and damages
+
+# make a dataframe first to store the info
+
+npvs <- data.frame(matrix(nrow = length(damages), ncol = length(discount_rates)))
+
+for (i in 1:nrow(damages)) {
+  
+}
+```
+
+```{r}
+
+```
+

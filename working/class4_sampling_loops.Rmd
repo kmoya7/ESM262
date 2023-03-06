@@ -1,0 +1,62 @@
+---
+title: "class4_sampling_loops"
+author: "Katheryn Moya"
+date: "2/27/2023"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+```
+
+```{r}
+
+source("working/R/crop_yield.R")
+
+```
+
+# Task 1: Create a for loop
+```{r}
+nsample = 10
+fertilizer_app = rnorm(mean=5, sd=0.5, n=nsample)
+crop = data.frame(fertilizer_app = fertilizer_app)
+TP = 20
+crop$yield = NA
+
+for(i in 1:10) {
+  crop$yield[i] = 1.8*fertilizer_app[i]^2 - 0.5*fertilizer_app[i]  + 0.1*TP
+}
+
+sum(crop$yield)
+```
+
+
+
+# Task 2: Create a function
+
+```{r pressure, echo=FALSE}
+# generate sample fertilizer application from a distribution
+
+nsample = 10
+fertilizer_app = rnorm(mean=5, sd=0.5, n=nsample)
+
+# Step 1  create data frame to store results 
+# how many simulations, what do you want to keep
+
+#create a dataframe that has rows for each model run
+# columns for fertilizer, precipitation, yield 
+results = data.frame(fertilizer = fertilizer_app,TP = 20, yield = NA)
+
+
+head(results)
+
+results$yield = crop_yield(fertilizer = fertilizer_app, TP = 20)
+
+```
+
+```{r}
+
+```
+

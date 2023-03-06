@@ -1,0 +1,41 @@
+---
+title: 'class 3: practicing functions'
+author: "Katheryn Moya"
+date: "2/22/2023"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+
+```
+
+
+```{r setup, include=FALSE}
+# call in the functions I made: 
+source("R/auto_power.R")
+source("R/mps_conversion.R")
+```
+
+Computing the power of a truck with the surface area of 16 m^2 and a mass of 31,572 kg at different speeds:
+
+```{r setup, include=FALSE}
+# converting units from km/hr to m/s
+speeds <- mps_conversion(c(80, 120, 40, 5))
+
+speeds <- append(speeds, 30) # adding the value that was already in the right units
+```
+
+
+```{r setup, include=FALSE}
+
+truck_power <- auto_power(mass = 31752, 
+           velocity = speeds, 
+           area = 16)
+
+truck_power
+```
+
+
