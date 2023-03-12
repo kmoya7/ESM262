@@ -1,0 +1,34 @@
+---
+title: "Assignment 4"
+author: "Katheryn Moya"
+date: "3/6/2023"
+output: html_document
+---
+In this assignment, we created a function that takes a vector of fish names and  returns three items: the most common fish, the rarest fish, and the total number of fish. We will then use this function with data provided. 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(here)
+```
+
+```{r}
+# read in the data
+
+possible_fish <- read.delim(here("ESM_262_Examples", "Data", "fish.txt"))
+head(possible_fish)
+```
+
+```{r}
+# source my function
+
+source("../R/compute_fish.R")
+```
+
+```{r}
+# input fish data into function
+
+compute_fish(possible_fish)
+```
+
